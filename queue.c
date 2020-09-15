@@ -5,6 +5,13 @@
 #include "harness.h"
 #include "queue.h"
 
+// From "Common vulnerabilities guide for C programmers"
+// Use strlcpy instead of strcpy to avoid overwrite
+// https://security.web.cern.ch/recommendations/en/codetools/c.shtml
+#ifndef strlcpy
+#define strlcpy(dst, src, sz) snprintf((dst), (sz), "%s", (src))
+#endif
+
 /*
  * Create empty queue.
  * Return NULL if could not allocate space.
