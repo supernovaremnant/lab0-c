@@ -185,6 +185,53 @@ void q_reverse(queue_t *q)
     q->tail = tmp;
 }
 
+
+inline bool list_cmp(list_ele_t *l1, list_ele_t *l2)
+{
+    // assume *l1 and *l2 aren't NULL
+    return (strcmp(l1->value, l2->value) >= 0) ? false : true;
+}
+
+list_ele_t *merge(list_ele_t *l1, list_ele_t *l2)
+{
+    if (!l2)
+        return l1;
+    if (!l1)
+        return l2;
+
+    if (list_cmp(l1, l2)) {  // compare 2 lists
+        l1->next = merge(l1->next, l2);
+        return l1;
+    } else {
+        l2->next = merge(l1, l2->next);
+        return l2;
+    }
+}
+
+list_ele_t *merge_sort(list_ele_t *head)
+{
+    if (!head || !head->next)
+        return head;
+
+    list_ele_t *fast = head->next;
+    list_ele_t *slow = head;
+
+    // split list
+    while (fast && fast->next) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    fast = slow->next;
+    slow->next = NULL;
+
+    // sort each list
+    list_ele_t *l1 = merge_sort(head);
+    list_ele_t *l2 = merge_sort(fast);
+
+    // merge sorted list l1 and l2
+    return merge(l1, l2);
+}
+
 /*
  * Sort elements of queue in ascending order
  * No effect if q is NULL or empty. In addition, if q has only one
@@ -192,6 +239,13 @@ void q_reverse(queue_t *q)
  */
 void q_sort(queue_t *q)
 {
-    /* TODO: You need to write the code for this function */
-    /* TODO: Remove the above comment when you are about to implement. */
+    if (!q || !q->head || !q->head->next)
+        return;
+
+    q->head = merge_sort(q->head);
+    list_ele_t *tmp = q->head;
+    while (tmp->next) {
+        tmp = tmp->next;
+    }
+    q->tail = tmp;
 }
