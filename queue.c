@@ -51,13 +51,32 @@ void q_free(queue_t *q)
  */
 bool q_insert_head(queue_t *q, char *s)
 {
-    list_ele_t *newh;
-    /* TODO: What should you do if the q is NULL? */
-    newh = malloc(sizeof(list_ele_t));
-    /* Don't forget to allocate space for the string and copy it */
-    /* What if either call to malloc returns NULL? */
-    newh->next = q->head;
-    q->head = newh;
+    if (!q)
+        return false;
+
+    // strlen calculates the lenght of C string
+    //(without including the terminating null character itself).
+    int strLen = strlen(s) + 1;
+    list_ele_t *newHead = (list_ele_t *) malloc(sizeof(list_ele_t));
+    char *val = (char *) malloc(sizeof(char) * strLen);
+
+    // either one of malloc fail to allocate memory
+    if (!newHead || !val) {
+        free(newHead);
+        free(val);
+        return false;
+    }
+
+    strlcpy(val, s, strLen);
+
+    newHead->value = val;
+    newHead->next = q->head;
+    q->head = newHead;
+    if (q->size == 0) {  // empty queue
+        q->tail = newHead;
+    }
+    q->size++;
+
     return true;
 }
 
