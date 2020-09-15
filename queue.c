@@ -199,13 +199,33 @@ list_ele_t *merge(list_ele_t *l1, list_ele_t *l2)
     if (!l1)
         return l2;
 
-    if (list_cmp(l1, l2)) {  // compare 2 lists
-        l1->next = merge(l1->next, l2);
-        return l1;
+    list_ele_t *tmp, *head;
+    if (list_cmp(l1, l2)) {
+        tmp = l1;
+        l1 = l1->next;
     } else {
-        l2->next = merge(l1, l2->next);
-        return l2;
+        tmp = l2;
+        l2 = l2->next;
     }
+    head = tmp;
+
+    while (l1 && l2) {
+        if (list_cmp(l1, l2)) {  // compare 2 lists
+            tmp->next = l1;
+            l1 = l1->next;
+        } else {
+            tmp->next = l2;
+            l2 = l2->next;
+        }
+        tmp = tmp->next;
+    }
+
+    if (!l1)
+        tmp->next = l2;
+    if (!l2)
+        tmp->next = l1;
+
+    return head;
 }
 
 list_ele_t *merge_sort(list_ele_t *head)
