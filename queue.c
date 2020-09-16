@@ -1,3 +1,4 @@
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -51,7 +52,7 @@ void q_free(queue_t *q)
  */
 bool q_insert_head(queue_t *q, char *s)
 {
-    if (!q)
+    if (!q || q->size == INT_MAX)
         return false;
 
     // strlen calculates the lenght of C string
@@ -89,7 +90,7 @@ bool q_insert_head(queue_t *q, char *s)
  */
 bool q_insert_tail(queue_t *q, char *s)
 {
-    if (!q)
+    if (!q || q->size == INT_MAX)
         return false;
 
     int strLen = strlen(s) + 1;
